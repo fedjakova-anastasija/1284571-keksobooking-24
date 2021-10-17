@@ -45,16 +45,16 @@ const showOffer = (similarNotices) => {
   similarNotices.slice(-1).forEach(({offer, author}) => {
     const offerElement = similarOfferTemplate.cloneNode(true);
 
-    const title = offerElement.querySelector('.popup__title');
-    offer.title ? title.innerHTML = offer.title : title.classList.add('hidden');
-
+    offerElement.querySelector('.popup__title').innerHTML = offer.title;
     offerElement.querySelector('.popup__text--address').innerHTML = offer.address;
     offerElement.querySelector('.popup__text--price').innerHTML = offer.price.toString().concat(' ₽/ночь');
     offerElement.querySelector('.popup__type').innerHTML = TYPES_NAME[offer.type];
     offerElement.querySelector('.popup__text--capacity').innerHTML = offer.rooms.toString().concat(' комнат для ') + offer.guests.toString().concat(' гостей');
     offerElement.querySelector('.popup__text--time').innerHTML = 'Заезд после '.concat(offer.checkin) + ', выезд до '.concat(offer.checkout);
-    offerElement.querySelector('.popup__description').innerHTML = offer.description;
     offerElement.querySelector('.popup__avatar').setAttribute('src', author.avatar);
+
+    const description = offerElement.querySelector('.popup__description');
+    offer.description ? description.innerHTML = offer.description : description.classList.add('hidden');
 
     showFeatures(offer, offerElement);
     showPhotos(offer, offerElement);
