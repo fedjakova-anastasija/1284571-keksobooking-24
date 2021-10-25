@@ -1,5 +1,6 @@
 import {createNotice} from './data.js';
 import {showOffers} from './popup.js';
+import './user-form.js';
 
 const SIMILAR_NOTICE_COUNT = 10;
 
