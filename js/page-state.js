@@ -2,12 +2,9 @@ const noticeForm = document.querySelector('.ad-form');
 const mapForm = document.querySelector('.map__filters');
 
 const toggleForm = (form, disabled = true) => {
+  const action = disabled ? (formItem) => formItem.setAttribute('disabled', '') : (formItem) => formItem.removeAttribute('disabled');
   for (const formItem of form) {
-    if (disabled) {
-      formItem.setAttribute('disabled', '');
-    } else {
-      formItem.removeAttribute('disabled');
-    }
+    action(formItem);
   }
 };
 
@@ -27,5 +24,4 @@ const makeActive = () => {
   toggleForm(mapForm, false);
 };
 
-makeInactive();
-makeActive();
+export {makeActive, makeInactive};
