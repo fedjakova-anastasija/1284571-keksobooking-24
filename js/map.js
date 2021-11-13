@@ -1,14 +1,13 @@
-import {makeActive} from './page-state.js';
-import {createNotice} from './data.js';
+import {makeActive, makeInactive} from './page-state.js';
 import {showOffers} from './popup.js';
 
-const SIMILAR_NOTICE_COUNT = 10;
 const MAX_ITEMS_COUNT = 7;
 const CENTER_LAT = 35.6978;
 const CENTER_LNG = 139.425;
 
 const addressInput = document.querySelector('#address');
-const points = Array.from({length: SIMILAR_NOTICE_COUNT}, createNotice);
+
+makeInactive();
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -59,17 +58,21 @@ mainPinMarker.on('moveend', (evt) => {
   addressInput.value = lat.concat(', ', lng);
 });
 
-points.forEach((point) => {
-  const marker = L.marker(
-    {
-      lat: point.location.lat,
-      lng: point.location.lng,
-    },
-    {
-      icon: pinIcon,
-    });
+const showPoints = (points) => {
+  points.forEach((point) => {
+    const marker = L.marker(
+      {
+        lat: point.location.lat,
+        lng: point.location.lng,
+      },
+      {
+        icon: pinIcon,
+      });
 
-  marker
-    .addTo(map)
-    .bindPopup(showOffers(point));
-});
+    marker
+      .addTo(map)
+      .bindPopup(showOffers(point));
+  });
+};
+
+export {showPoints, map, mainPinMarker, CENTER_LAT, CENTER_LNG};
