@@ -4,41 +4,51 @@ const renderModal = (status) => {
   const alertContainer = document.querySelector(`#${status}`).content.querySelector(`.${status}`);
   const alert = alertContainer.cloneNode(true);
 
-  alert.classList.add('hidden');
   document.body.append(alert);
+
+  const modal = document.querySelector(`.${status}`);
+
+  if (status === 'error') {
+    const errorModalCloseElement = document.querySelector('.error__button');
+    errorModalCloseElement.addEventListener('click', () => {
+      closeUserModal();
+    });
+
+    modal.addEventListener('click', (evt) => {
+      if (evt.target !== errorModalCloseElement) {
+        closeUserModal();
+      }
+    });
+  } else {
+    modal.addEventListener('click', () => {
+      closeUserModal();
+    });
+  }
 };
 
-renderModal('success');
-renderModal('error');
-
-const successModal = document.querySelector('.success');
-const errorModal = document.querySelector('.error');
-const errorModalCloseElement = document.querySelector('.error__button');
-
-const onPopupEscKeydown = (evt, modal) => {
+const onPopupEscKeydown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    closeUserModal(modal);
+    closeUserModal();
   }
 };
 
-function closeUserModal(modal) {
-  modal.classList.add('hidden');
-  document.removeEventListener('keydown', onPopupEscKeydown(modal));
+function closeUserModal() {
+  const successModal = document.querySelector('.success');
+  const errorModal = document.querySelector('.error');
+
+  if (successModal) {
+    document.body.removeChild(successModal);
+  }
+  else if (errorModal) {
+    document.body.removeChild(errorModal);
+  }
+  document.removeEventListener('keydown', onPopupEscKeydown);
 }
 
-errorModalCloseElement.addEventListener('click', () => {
-  closeUserModal(errorModal);
-});
+const openUserModal = (status) => {
+  renderModal(status);
+  document.addEventListener('keydown', onPopupEscKeydown);
+};
 
-successModal.addEventListener('click', () => {
-  closeUserModal(successModal);
-});
-
-errorModal.addEventListener('click', (evt) => {
-  if (evt.target !== errorModalCloseElement) {
-    closeUserModal(errorModal);
-  }
-});
-
-export {onPopupEscKeydown};
+export {onPopupEscKeydown, openUserModal};

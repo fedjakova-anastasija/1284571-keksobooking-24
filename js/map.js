@@ -7,12 +7,9 @@ const CENTER_LNG = 139.425;
 
 const addressInput = document.querySelector('#address');
 
-makeInactive();
-
 const map = L.map('map-canvas')
   .on('load', () => {
-    makeActive();
-    addressInput.value = CENTER_LAT.toString().concat(', ', CENTER_LNG.toString());
+    addressInput.value = `${CENTER_LAT}, ${CENTER_LNG}`;
   })
   .setView({
     lat: CENTER_LAT,
@@ -55,7 +52,7 @@ mainPinMarker.on('moveend', (evt) => {
   const lat = evt.target.getLatLng().lat.toPrecision(MAX_ITEMS_COUNT).toString();
   const lng = evt.target.getLatLng().lng.toPrecision(MAX_ITEMS_COUNT).toString();
 
-  addressInput.value = lat.concat(', ', lng);
+  addressInput.value = `${lat}, ${lng}`;
 });
 
 const showPoints = (points) => {

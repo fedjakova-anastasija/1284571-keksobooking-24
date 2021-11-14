@@ -24,6 +24,4 @@ const makeActive = () => {
   toggleForm(mapForm, false);
 };
 
-makeInactive();
-
 export {makeActive, makeInactive};

@@ -83,14 +83,14 @@ const setUserFormSubmit = (onSuccess) => {
     evt.preventDefault();
 
     sendData(
-      () => onSuccess(),
-      () => showErrorMessage(),
+      onSuccess,
+      showErrorMessage,
       new FormData(evt.target),
     );
   });
 };
 
-function resetForm() {
+const resetForm = () => {
   const addressInput = document.querySelector('#address');
   const latlng = L.latLng(CENTER_LAT, CENTER_LNG);
 
@@ -98,7 +98,7 @@ function resetForm() {
   mapFiltersForm.reset();
   mainPinMarker.setLatLng(latlng);
   map.closePopup();
-  addressInput.value = CENTER_LAT.toString().concat(', ', CENTER_LNG.toString());
-}
+  addressInput.value = `${CENTER_LAT}, ${CENTER_LNG}`;
+};
 
 export {setUserFormSubmit, resetForm};

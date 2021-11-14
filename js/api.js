@@ -5,16 +5,11 @@ const getData = (onSuccess, onFail) => {
     .then((response) => {
       if (response.ok) {
         return response.json();
-      } else {
-        throw new Error('Не удалось получить данные. Попробуйте обновить страницу');
       }
+      throw new Error('Не удалось получить данные. Попробуйте обновить страницу');
     })
-    .then((points) => {
-      onSuccess(points);
-    })
-    .catch((err) => {
-      onFail(err);
-    });
+    .then(onSuccess)
+    .catch(onFail);
 };
 
 const sendData = (onSuccess, onFail, body) => {
@@ -32,9 +27,7 @@ const sendData = (onSuccess, onFail, body) => {
       throw new Error('Не удалось отправить форму. Попробуйте ещё раз');
     }
   })
-    .catch((err) => {
-      onFail(err);
-    });
+    .catch(onFail);
 };
 
 export {getData, sendData};
