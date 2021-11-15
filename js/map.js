@@ -1,4 +1,3 @@
-import {makeActive, makeInactive} from './page-state.js';
 import {showOffers} from './popup.js';
 
 const MAX_ITEMS_COUNT = 7;
