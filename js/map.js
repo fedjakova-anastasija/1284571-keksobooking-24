@@ -1,5 +1,7 @@
 import {showOffers} from './popup.js';
+import {comparePoints} from './map-filter.js';
 
+const SIMILAR_NOTICE_COUNT = 10;
 const MAX_ITEMS_COUNT = 7;
 const CENTER_LAT = 35.6978;
 const CENTER_LNG = 139.425;
@@ -54,20 +56,29 @@ mainPinMarker.on('moveend', (evt) => {
   addressInput.value = `${lat}, ${lng}`;
 });
 
-const showPoints = (points) => {
-  points.forEach((point) => {
-    const marker = L.marker(
-      {
-        lat: point.location.lat,
-        lng: point.location.lng,
-      },
-      {
-        icon: pinIcon,
-      });
+const activeMarkers = [];
 
-    marker
-      .addTo(map)
-      .bindPopup(showOffers(point));
+const showPoints = (points) => {
+  activeMarkers.forEach(marker => map.removeLayer(marker));
+  points
+    .slice()
+    .sort(comparePoints)
+    .slice(0, SIMILAR_NOTICE_COUNT)
+    .forEach((point) => {
+      const marker = L.marker(
+        {
+          lat: point.location.lat,
+          lng: point.location.lng,
+        },
+        {
+          icon: pinIcon,
+        });
+
+      marker
+        .addTo(map)
+        .bindPopup(showOffers(point));
+
+      activeMarkers.push(marker);
   });
 };
 
