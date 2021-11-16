@@ -53,8 +53,16 @@ const showOffers = (similarNotice) => {
   const description = offerElement.querySelector('.popup__description');
   description.textContent = offer.description ? offer.description : description.classList.add('hidden');
 
-  showFeatures(offer, offerElement);
-  showPhotos(offer, offerElement);
+  if (offer.features) {
+    showFeatures(offer, offerElement);
+  }
+
+  if (offer.photos) {
+    showPhotos(offer, offerElement);
+  } else {
+    const photos = offerElement.querySelector('.popup__photos');
+    photos.classList.add('hidden');
+  }
 
   return offerElement;
 };

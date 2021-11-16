@@ -1,3 +1,7 @@
+import {sendData} from './api.js';
+import {showErrorMessage} from './util.js';
+import {map, mainPinMarker, CENTER_LAT, CENTER_LNG} from './map.js';
+
 const userRoomNumberSelect = document.querySelector('#room_number');
 const userCapacitySelect = document.querySelector('#capacity');
 const userHousingTypeSelect = document.querySelector('#type');
@@ -5,6 +9,8 @@ const userPriceInput = document.querySelector('#price');
 const userTimeinSelect = document.querySelector('#timein');
 const userTimeoutSelect = document.querySelector('#timeout');
 const userSubmitButton = document.querySelector('.ad-form__submit');
+const userForm = document.querySelector('.ad-form');
+const mapFiltersForm = document.querySelector('.map__filters');
 
 const housingType = {
   palace: 10000,
@@ -71,3 +77,28 @@ userSubmitButton.addEventListener('click', () => {
   checkCapacity();
   checkHousingType();
 });
+
+const setUserFormSubmit = (onSuccess) => {
+  userForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData(
+      onSuccess,
+      showErrorMessage,
+      new FormData(evt.target),
+    );
+  });
+};
+
+const resetForm = () => {
+  const addressInput = document.querySelector('#address');
+  const latlng = L.latLng(CENTER_LAT, CENTER_LNG);
+
+  userForm.reset();
+  mapFiltersForm.reset();
+  mainPinMarker.setLatLng(latlng);
+  map.closePopup();
+  addressInput.value = `${CENTER_LAT}, ${CENTER_LNG}`;
+};
+
+export {setUserFormSubmit, resetForm};
