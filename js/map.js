@@ -1,9 +1,10 @@
 import {showOffers} from './popup.js';
+import {filterPoints} from './map-filter.js';
 
 const MAX_ITEMS_COUNT = 7;
 const CENTER_LAT = 35.6978;
 const CENTER_LNG = 139.425;
-
+const activeMarkers = [];
 const addressInput = document.querySelector('#address');
 
 const map = L.map('map-canvas')
@@ -54,21 +55,27 @@ mainPinMarker.on('moveend', (evt) => {
   addressInput.value = `${lat}, ${lng}`;
 });
 
-const showPoints = (points) => {
-  points.forEach((point) => {
-    const marker = L.marker(
-      {
-        lat: point.location.lat,
-        lng: point.location.lng,
-      },
-      {
-        icon: pinIcon,
-      });
+const renderPoint = (point) => {
+  const marker = L.marker(
+    {
+      lat: point.location.lat,
+      lng: point.location.lng,
+    },
+    {
+      icon: pinIcon,
+    });
 
-    marker
-      .addTo(map)
-      .bindPopup(showOffers(point));
-  });
+  marker
+    .addTo(map)
+    .bindPopup(() => showOffers(point));
+
+  activeMarkers.push(marker);
+};
+
+const showPoints = (points) => {
+  activeMarkers.forEach((marker) => map.removeLayer(marker));
+  filterPoints(points)
+    .forEach((point) => renderPoint(point));
 };
 
 export {showPoints, map, mainPinMarker, CENTER_LAT, CENTER_LNG};
