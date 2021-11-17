@@ -34,7 +34,7 @@ const filterRoom = (point) => housingRoom.value === 'any' || housingRoom.value =
 const filterGuest = (point) => housingGuest.value === 'any' || housingGuest.value === point.offer.guests.toString();
 
 const filterFeature = (point) => {
-  const featureInputs = Array.prototype.slice.call(document.querySelectorAll('[name="features"]:checked'));
+  const featureInputs = Array.from(document.querySelectorAll('[name="features"]:checked'));
 
   return featureInputs.every((feature) => point.offer.features && point.offer.features.includes(feature.value));
 };
