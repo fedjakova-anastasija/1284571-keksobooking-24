@@ -2,6 +2,8 @@ import {showPoints} from './map.js';
 import {debounce} from './utils/debounce.js';
 
 const SIMILAR_NOTICE_COUNT = 10;
+const LOW_PRICE = 10000;
+const HIGH_PRICE = 50000;
 const RERENDER_DELAY = 500;
 
 const housingType = document.querySelector('#housing-type');
@@ -10,10 +12,7 @@ const housingRoom = document.querySelector('#housing-rooms');
 const housingGuest = document.querySelector('#housing-guests');
 const features = document.querySelectorAll('[name="features"]');
 
-function isCorrectPrice(price, priceType) {
-  const LOW_PRICE = 10000;
-  const HIGH_PRICE = 50000;
-
+const isCorrectPrice = (price, priceType) => {
   switch (priceType) {
     case 'low':
       return price < LOW_PRICE;
@@ -24,17 +23,35 @@ function isCorrectPrice(price, priceType) {
     default:
       return true;
   }
-}
+};
 
-const filterPoints = (allPoints) => {
-  let points = allPoints.slice();
+const filterHousingType = (point) => housingType.value === 'any' || housingType.value === point.offer.type;
 
-  points = housingType.value !== 'any' ? points.filter((point) => housingType.value === point.offer.type) : points;
-  points = housingPrice.value !== 'any' ? points.filter((point) => isCorrectPrice(point.offer.price, housingPrice.value)) : points;
-  points = housingRoom.value !== 'any' ? points.filter((point) => housingRoom.value === point.offer.rooms.toString()) : points;
-  points = housingGuest.value !== 'any' ? points.filter((point) => housingGuest.value === point.offer.guests.toString()) : points;
+const filterPrice = (point) => housingPrice.value === 'any' || isCorrectPrice(point.offer.price, housingPrice.value);
 
-  return points;
+const filterRoom = (point) => housingRoom.value === 'any' || housingRoom.value === point.offer.rooms.toString();
+
+const filterGuest = (point) => housingGuest.value === 'any' || housingGuest.value === point.offer.guests.toString();
+
+const filterFeature = (point) => {
+  const featureInputs = Array.prototype.slice.call(document.querySelectorAll('[name="features"]:checked'));
+
+  return featureInputs.every((feature) => point.offer.features && point.offer.features.includes(feature.value));
+};
+
+const filterPoints = (points) => {
+  const filteredPoints = [];
+
+  for (const point of points) {
+    if (filterHousingType(point) && filterPrice(point) && filterRoom(point) && filterGuest(point) && filterFeature(point)) {
+      filteredPoints.push(point);
+      if (filteredPoints.length >= SIMILAR_NOTICE_COUNT) {
+        break;
+      }
+    }
+  }
+
+  return filteredPoints;
 };
 
 const setHousingTypeChange = (cb, points) => {
@@ -67,27 +84,6 @@ const setFeatures = (cb, points) => {
   }));
 };
 
-const getPointRank = (point) => {
-  const featureInputs = document.querySelectorAll('[name="features"]:checked');
-
-  let rank = 0;
-
-  featureInputs.forEach((feature) => {
-    if (point.offer.features && point.offer.features.includes(feature.value)) {
-      rank++;
-    }
-  });
-
-  return rank;
-};
-
-const comparePoints = (pointA, pointB) => {
-  const rankA = getPointRank(pointA);
-  const rankB = getPointRank(pointB);
-
-  return rankB - rankA;
-};
-
 const showFilteredPoints = (points) => {
   showPoints(points.slice(0, SIMILAR_NOTICE_COUNT));
   setHousingTypeChange(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
@@ -97,4 +93,4 @@ const showFilteredPoints = (points) => {
   setFeatures(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
 };
 
-export {comparePoints, showFilteredPoints};
+export {showFilteredPoints, filterPoints};
