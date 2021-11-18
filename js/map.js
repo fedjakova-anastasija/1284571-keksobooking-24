@@ -2,8 +2,8 @@ import {showOffers} from './popup.js';
 import {filterPoints} from './map-filter.js';
 
 const MAX_ITEMS_COUNT = 7;
-const CENTER_LAT = 35.6978;
-const CENTER_LNG = 139.425;
+const CENTER_LAT = 35.6895;
+const CENTER_LNG = 139.692;
 const activeMarkers = [];
 const addressInput = document.querySelector('#address');
 
@@ -48,7 +48,7 @@ const mainPinMarker = L.marker(
 
 mainPinMarker.addTo(map);
 
-mainPinMarker.on('moveend', (evt) => {
+mainPinMarker.on('drag', (evt) => {
   const lat = evt.target.getLatLng().lat.toPrecision(MAX_ITEMS_COUNT).toString();
   const lng = evt.target.getLatLng().lng.toPrecision(MAX_ITEMS_COUNT).toString();
 

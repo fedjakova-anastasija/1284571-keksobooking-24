@@ -1,5 +1,7 @@
 import {isEscapeKey} from './util.js';
 
+const ERROR_STATUS = 'error';
+
 const renderModal = (status) => {
   const alertContainer = document.querySelector(`#${status}`).content.querySelector(`.${status}`);
   const alert = alertContainer.cloneNode(true);
@@ -8,7 +10,7 @@ const renderModal = (status) => {
 
   const modal = document.querySelector(`.${status}`);
 
-  if (status === 'error') {
+  if (status === ERROR_STATUS) {
     const errorModalCloseElement = document.querySelector('.error__button');
     errorModalCloseElement.addEventListener('click', () => {
       closeUserModal();
@@ -28,10 +30,12 @@ const renderModal = (status) => {
 
 const onPopupEscKeydown = (evt) => {
   if (isEscapeKey(evt)) {
-    evt.preventDefault();
     closeUserModal();
   }
+
+  evt.preventDefault();
 };
+
 
 function closeUserModal() {
   const successModal = document.querySelector('.success');

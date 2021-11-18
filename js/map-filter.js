@@ -5,6 +5,7 @@ const SIMILAR_NOTICE_COUNT = 10;
 const LOW_PRICE = 10000;
 const HIGH_PRICE = 50000;
 const RERENDER_DELAY = 500;
+const ANY_VALUE = 'any';
 
 const housingType = document.querySelector('#housing-type');
 const housingPrice = document.querySelector('#housing-price');
@@ -25,13 +26,13 @@ const isCorrectPrice = (price, priceType) => {
   }
 };
 
-const filterHousingType = (point) => housingType.value === 'any' || housingType.value === point.offer.type;
+const filterHousingType = (point) => housingType.value === ANY_VALUE || housingType.value === point.offer.type;
 
-const filterPrice = (point) => housingPrice.value === 'any' || isCorrectPrice(point.offer.price, housingPrice.value);
+const filterPrice = (point) => housingPrice.value === ANY_VALUE || isCorrectPrice(point.offer.price, housingPrice.value);
 
-const filterRoom = (point) => housingRoom.value === 'any' || housingRoom.value === point.offer.rooms.toString();
+const filterRoom = (point) => housingRoom.value === ANY_VALUE || housingRoom.value === point.offer.rooms.toString();
 
-const filterGuest = (point) => housingGuest.value === 'any' || housingGuest.value === point.offer.guests.toString();
+const filterGuest = (point) => housingGuest.value === ANY_VALUE || housingGuest.value === point.offer.guests.toString();
 
 const filterFeature = (point) => {
   const featureInputs = Array.from(document.querySelectorAll('[name="features"]:checked'));
@@ -84,13 +85,17 @@ const setFeatures = (cb, points) => {
   }));
 };
 
+const configureChangeEvents = (cb, points) => {
+  setHousingTypeChange((filteredPoints) => cb(filteredPoints), points);
+  setPriceChange((filteredPoints) => cb(filteredPoints), points);
+  setRoomChange((filteredPoints) => cb(filteredPoints), points);
+  setGuestChange((filteredPoints) => cb(filteredPoints), points);
+  setFeatures((filteredPoints) => cb(filteredPoints), points);
+};
+
 const showFilteredPoints = (points) => {
   showPoints(points.slice(0, SIMILAR_NOTICE_COUNT));
-  setHousingTypeChange(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
-  setPriceChange(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
-  setRoomChange(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
-  setGuestChange(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
-  setFeatures(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
+  configureChangeEvents(debounce((filteredPoints) => showPoints(filteredPoints), RERENDER_DELAY), points);
 };
 
 export {showFilteredPoints, filterPoints};

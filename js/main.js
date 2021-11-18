@@ -2,15 +2,18 @@ import {setUserFormSubmit, resetForm} from './user-form.js';
 import {map} from './map.js';
 import {getData} from './api.js';
 import {showAlert} from './util.js';
-import {makeActive, makeInactive} from './page-state.js';
+import {makeMapFormActive, makeNoticeFormActive, makeInactive} from './page-state.js';
 import {showFilteredPoints} from './map-filter.js';
 
 makeInactive();
 
 map.whenReady(() => {
-  makeActive();
+  makeNoticeFormActive();
   getData(
-    (points) => showFilteredPoints(points),
+    (points) => {
+      makeMapFormActive();
+      showFilteredPoints(points);
+    },
     () => showAlert('Ошибка на стороне сервера. Попробуйте позже'),
   );
 });

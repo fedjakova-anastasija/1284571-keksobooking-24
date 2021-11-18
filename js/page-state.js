@@ -16,12 +16,15 @@ const makeInactive = () => {
   toggleForm(mapForm);
 };
 
-const makeActive = () => {
-  noticeForm.classList.remove('ad-form--disabled');
+const makeMapFormActive = () => {
   mapForm.classList.remove('map__filters--disabled');
-
-  toggleForm(noticeForm, false);
   toggleForm(mapForm, false);
 };
 
-export {makeActive, makeInactive};
+const makeNoticeFormActive = () => {
+  noticeForm.classList.remove('ad-form--disabled');
+
+  toggleForm(noticeForm, false);
+};
+
+export {makeMapFormActive, makeNoticeFormActive, makeInactive};

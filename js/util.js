@@ -1,6 +1,8 @@
 import {openUserModal} from './user-modal.js';
 
 const ALERT_SHOW_TIME = 5000;
+const SUCCESS_STATUS = 'success';
+const ERROR_STATUS = 'error';
 
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
@@ -26,11 +28,11 @@ const showAlert = (message) => {
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const showErrorMessage = () => {
-  openUserModal('error');
+  openUserModal(ERROR_STATUS);
 };
 
 const showSuccessMessage = () => {
-  openUserModal('success');
+  openUserModal(SUCCESS_STATUS);
 };
 
 export {showAlert, showSuccessMessage, showErrorMessage, isEscapeKey};

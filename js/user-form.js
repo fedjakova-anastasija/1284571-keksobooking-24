@@ -2,6 +2,10 @@ import {sendData} from './api.js';
 import {showErrorMessage} from './util.js';
 import {map, mainPinMarker, CENTER_LAT, CENTER_LNG} from './map.js';
 
+const MAX_ROOM_NUMBER_VALUE = 100;
+const MIN_CAPACITY_NUMBER_VALUE = 1;
+const NO_CAPACITY_VALUE = 0;
+
 const userRoomNumberSelect = document.querySelector('#room_number');
 const userCapacitySelect = document.querySelector('#capacity');
 const userHousingTypeSelect = document.querySelector('#type');
@@ -24,7 +28,7 @@ const checkCapacity = () => {
   const userCapacityNumberValue = Number(userCapacitySelect.value);
   const userRoomNumberValue = Number(userRoomNumberSelect.value);
 
-  if (userRoomNumberValue === 100 && userCapacityNumberValue !== 0) {
+  if (userRoomNumberValue === MAX_ROOM_NUMBER_VALUE && userCapacityNumberValue !== MIN_CAPACITY_NUMBER_VALUE) {
     userCapacitySelect.setCustomValidity('Необходимо выбрать поле "не для гостей"');
     userCapacitySelect.reportValidity();
 
@@ -32,20 +36,13 @@ const checkCapacity = () => {
   }
 
   if (userCapacityNumberValue > userRoomNumberValue && userCapacityNumberValue !== 0) {
-    const invalidText = userRoomNumberValue === 1 ? 'поле "для 1 гостя"' : `${userRoomNumberValue} или менее гостей`;
+    const invalidText = userRoomNumberValue === MIN_CAPACITY_NUMBER_VALUE ? 'поле "для 1 гостя"' : `${userRoomNumberValue} или менее гостей`;
     userCapacitySelect.setCustomValidity(`Необходимо выбрать ${invalidText}`);
-  } else if (userCapacityNumberValue === 0 && userRoomNumberValue !== 100) {
+  } else if (userCapacityNumberValue === NO_CAPACITY_VALUE && userRoomNumberValue !== MAX_ROOM_NUMBER_VALUE) {
     userCapacitySelect.setCustomValidity('Необходимо выбрать поле с количеством гостей');
   } else {
     userCapacitySelect.setCustomValidity('');
   }
-  userCapacitySelect.reportValidity();
-};
-
-const checkHousingType = () => {
-  const userHousingTypeValue = userHousingTypeSelect.value;
-
-  userPriceInput.placeholder = housingType[userHousingTypeValue];
   userCapacitySelect.reportValidity();
 };
 
@@ -62,20 +59,52 @@ const checkPrice = () => {
   userPriceInput.reportValidity();
 };
 
-const checkTimein = (evt) => userTimeoutSelect.value = evt.target.value;
+const onCapacityChange = () => {
+  checkCapacity();
+};
 
-const checkTimeout = (evt) => userTimeinSelect.value = evt.target.value;
+const onRoomNumberChange = () => {
+  checkCapacity();
+};
 
-userCapacitySelect.addEventListener('change', checkCapacity);
-userRoomNumberSelect.addEventListener('change', checkCapacity);
-userHousingTypeSelect.addEventListener('change', checkHousingType);
-userPriceInput.addEventListener('change', checkPrice);
-userTimeinSelect.addEventListener('change', checkTimein);
-userTimeoutSelect.addEventListener('change', checkTimeout);
+const onHousingTypeChange = () => {
+  const userHousingTypeValue = userHousingTypeSelect.value;
+
+  userPriceInput.placeholder = housingType[userHousingTypeValue];
+
+  checkPrice();
+  userCapacitySelect.reportValidity();
+};
+
+const onPriceChange = () => {
+  checkPrice();
+};
+
+const onTimeinChange = (evt) => userTimeoutSelect.value = evt.target.value;
+
+const oncheckTimeoutChange = (evt) => userTimeinSelect.value = evt.target.value;
+
+userCapacitySelect.addEventListener('change', onCapacityChange);
+userRoomNumberSelect.addEventListener('change', onRoomNumberChange);
+userHousingTypeSelect.addEventListener('change', onHousingTypeChange);
+userPriceInput.addEventListener('input', onPriceChange);
+userTimeinSelect.addEventListener('change', onTimeinChange);
+userTimeoutSelect.addEventListener('change', oncheckTimeoutChange);
+
+const resetForm = () => {
+  const addressInput = document.querySelector('#address');
+  const latlng = L.latLng(CENTER_LAT, CENTER_LNG);
+
+  userForm.reset();
+  mapFiltersForm.reset();
+  mainPinMarker.setLatLng(latlng);
+  map.closePopup();
+  addressInput.setAttribute('value', `${CENTER_LAT}, ${CENTER_LNG}`);
+};
 
 userSubmitButton.addEventListener('click', () => {
-  checkCapacity();
-  checkHousingType();
+  onCapacityChange();
+  onHousingTypeChange();
 });
 
 const setUserFormSubmit = (onSuccess) => {
@@ -88,17 +117,10 @@ const setUserFormSubmit = (onSuccess) => {
       new FormData(evt.target),
     );
   });
-};
 
-const resetForm = () => {
-  const addressInput = document.querySelector('#address');
-  const latlng = L.latLng(CENTER_LAT, CENTER_LNG);
-
-  userForm.reset();
-  mapFiltersForm.reset();
-  mainPinMarker.setLatLng(latlng);
-  map.closePopup();
-  addressInput.value = `${CENTER_LAT}, ${CENTER_LNG}`;
+  userForm.addEventListener('reset', () => {
+    resetForm();
+  });
 };
 
 export {setUserFormSubmit, resetForm};
