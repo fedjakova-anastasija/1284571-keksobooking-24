@@ -1,6 +1,7 @@
 import {sendData} from './api.js';
 import {showErrorMessage} from './util.js';
 import {map, mainPinMarker, CENTER_LAT, CENTER_LNG} from './map.js';
+import {showFilteredPoints} from './map-filter.js';
 
 const MAX_ROOM_NUMBER_VALUE = 100;
 const MIN_CAPACITY_NUMBER_VALUE = 1;
@@ -91,7 +92,7 @@ userPriceInput.addEventListener('input', onPriceChange);
 userTimeinSelect.addEventListener('change', onTimeinChange);
 userTimeoutSelect.addEventListener('change', oncheckTimeoutChange);
 
-const resetForm = () => {
+const resetForm = (points) => {
   const addressInput = document.querySelector('#address');
   const latlng = L.latLng(CENTER_LAT, CENTER_LNG);
 
@@ -100,6 +101,7 @@ const resetForm = () => {
   mainPinMarker.setLatLng(latlng);
   map.closePopup();
   addressInput.setAttribute('value', `${CENTER_LAT}, ${CENTER_LNG}`);
+  showFilteredPoints(points);
 };
 
 userSubmitButton.addEventListener('click', () => {
@@ -119,7 +121,7 @@ const setUserFormSubmit = (onSuccess) => {
   });
 
   userForm.addEventListener('reset', () => {
-    resetForm();
+    onSuccess();
   });
 };
 

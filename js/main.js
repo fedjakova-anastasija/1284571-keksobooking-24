@@ -7,10 +7,13 @@ import {showFilteredPoints} from './map-filter.js';
 
 makeInactive();
 
+let initialPoints = [];
+
 map.whenReady(() => {
   makeNoticeFormActive();
   getData(
     (points) => {
+      initialPoints = points.slice();
       makeMapFormActive();
       showFilteredPoints(points);
     },
@@ -18,4 +21,4 @@ map.whenReady(() => {
   );
 });
 
-setUserFormSubmit(resetForm);
+setUserFormSubmit(() => resetForm(initialPoints));
