@@ -29,14 +29,14 @@ const checkCapacity = () => {
   const userCapacityNumberValue = Number(userCapacitySelect.value);
   const userRoomNumberValue = Number(userRoomNumberSelect.value);
 
-  if (userRoomNumberValue === MAX_ROOM_NUMBER_VALUE && userCapacityNumberValue !== MIN_CAPACITY_NUMBER_VALUE) {
+  if (userRoomNumberValue === MAX_ROOM_NUMBER_VALUE && userCapacityNumberValue !== NO_CAPACITY_VALUE) {
     userCapacitySelect.setCustomValidity('Необходимо выбрать поле "не для гостей"');
     userCapacitySelect.reportValidity();
 
     return;
   }
 
-  if (userCapacityNumberValue > userRoomNumberValue && userCapacityNumberValue !== 0) {
+  if (userCapacityNumberValue > userRoomNumberValue && userCapacityNumberValue !== NO_CAPACITY_VALUE) {
     const invalidText = userRoomNumberValue === MIN_CAPACITY_NUMBER_VALUE ? 'поле "для 1 гостя"' : `${userRoomNumberValue} или менее гостей`;
     userCapacitySelect.setCustomValidity(`Необходимо выбрать ${invalidText}`);
   } else if (userCapacityNumberValue === NO_CAPACITY_VALUE && userRoomNumberValue !== MAX_ROOM_NUMBER_VALUE) {
@@ -83,14 +83,14 @@ const onPriceChange = () => {
 
 const onTimeinChange = (evt) => userTimeoutSelect.value = evt.target.value;
 
-const oncheckTimeoutChange = (evt) => userTimeinSelect.value = evt.target.value;
+const onTimeoutChange = (evt) => userTimeinSelect.value = evt.target.value;
 
 userCapacitySelect.addEventListener('change', onCapacityChange);
 userRoomNumberSelect.addEventListener('change', onRoomNumberChange);
 userHousingTypeSelect.addEventListener('change', onHousingTypeChange);
 userPriceInput.addEventListener('input', onPriceChange);
 userTimeinSelect.addEventListener('change', onTimeinChange);
-userTimeoutSelect.addEventListener('change', oncheckTimeoutChange);
+userTimeoutSelect.addEventListener('change', onTimeoutChange);
 
 const resetForm = (points) => {
   const addressInput = document.querySelector('#address');
